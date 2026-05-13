@@ -1,5 +1,6 @@
 <script setup>
 import { computed } from 'vue';
+import { useRouter } from 'vue-router';
 import { AppstoreOutlined } from '@ant-design/icons-vue';
 import CategoryTabs from '../components/CategoryTabs.vue';
 import SearchBar from '../components/SearchBar.vue';
@@ -7,6 +8,7 @@ import SiteCard from '../components/SiteCard.vue';
 import { useSiteStore } from '../stores/siteStore';
 
 const store = useSiteStore();
+const router = useRouter();
 
 const categoryLabelMap = computed(() => {
   return Object.fromEntries(store.categories.map((category) => [category.value, category.label]));
@@ -14,6 +16,20 @@ const categoryLabelMap = computed(() => {
 
 function handleSearch(value) {
   store.setSearchKeyword(value);
+}
+
+function handleCategoryChange(category) {
+  if (category === 'common-skills') {
+    router.push('/skills');
+    return;
+  }
+
+  if (category === 'common-mcp') {
+    router.push('/mcp');
+    return;
+  }
+
+  store.setActiveCategory(category);
 }
 </script>
 
@@ -36,7 +52,7 @@ function handleSearch(value) {
       <CategoryTabs
         :categories="store.categories"
         :active-category="store.activeCategory"
-        @change="store.setActiveCategory"
+        @change="handleCategoryChange"
       />
 
       <div class="result-meta">
